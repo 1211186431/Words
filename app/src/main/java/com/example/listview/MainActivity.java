@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public void onclickinsert(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final View viewDialog = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_instert, null, false);
-        builder.setTitle("长度转换")
+        builder.setTitle("insert")
                 .setView(viewDialog)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
                          EditText e2=viewDialog.findViewById(R.id.insert_meaning_edit);
                         EditText e3=viewDialog.findViewById(R.id.insert_sample_edit);
                          wordsDB.Insert(e1.getText().toString(),e2.getText().toString(),e3.getText().toString());
-
+                         refreshWordsList(wordsDB);
                     }
                 })
                 .setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -68,6 +68,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         builder.create().show();
+    }
+    public void refreshWordsList(WordsDB wordsDB){
+        ListView list = (ListView)findViewById(R.id.list);
+        ArrayList<Map<String, String>> items = wordsDB.getAllWords();
+        SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, items, R.layout.item,
+                new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
+                new int[]{R.id.textId, R.id.textViewWord});
+        list.setAdapter(adapter);
     }
 
 }
