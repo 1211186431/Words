@@ -1,7 +1,9 @@
 package com.example.listview;
 
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,12 +11,18 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +43,7 @@ public class LeftFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -72,7 +81,6 @@ public class LeftFragment extends Fragment {
         }
         Log.v("tag","onCreat");
 
-
     }
 
     @Override
@@ -83,6 +91,10 @@ public class LeftFragment extends Fragment {
         final Context context = contentView.getContext();
 
         ListView list = (ListView) contentView.findViewById(R.id.list);
+
+
+        this.registerForContextMenu(list);
+
 
         WordsDB wordsDB=new WordsDB(context);
             ArrayList<Map<String, String>> items = wordsDB.getAllWords();
@@ -123,5 +135,126 @@ public class LeftFragment extends Fragment {
         super.onResume();
 
     }
+    @Override
+
+    public void onCreateContextMenu(ContextMenu menu, View v,
+
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+
+       // Log.v(TAG, "WordItemFragment::onCreateContextMenu()");
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.contextmenu_wordslistview, menu);
+    }
+
+    @Override
+
+    public boolean onContextItemSelected(MenuItem item) {   //上下文菜单
+        TextView textId = null;
+        AdapterView.AdapterContextMenuInfo info = null;
+        View itemView = null;
+
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                itemView = info.targetView;
+                //删除单词
+                textId = (TextView) itemView.findViewById(R.id.textId);
+                if (textId != null) {
+                    onDeleteDialog(textId.getText().toString());
+                }
+                break;
+            case R.id.action_update:
+                //修改单词
+                info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                itemView = info.targetView;
+                textId = (TextView) itemView.findViewById(R.id.textId);
+
+                if (textId != null) {
+                      onUpdateDialog(textId.getText().toString());
+                }
+                break;
+        }
+        return true;
+    }
+
+    public void onDeleteDialog(final String strId) {  //删除
+        new android.app.AlertDialog.Builder(getContext()).setTitle("删除单词").setMessage("是否真的删除单词?").setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //既可以使用Sql语句删除，也可以使用使用delete方法删除
+                WordsDB wordsDB=WordsDB.getWordsDB();
+                wordsDB.DeleteUseSql(strId);
+
+                //单词已经删除，更新显示列表
+                refreshWordsList(wordsDB);
+            }
+        }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        }).create().show();
+    }
+
+
+    public void onUpdateDialog(String strId) {
+        WordsDB wordsDB=WordsDB.getWordsDB();
+        if (wordsDB != null && strId != null) {
+
+            Words.WordDescription item = wordsDB.getSingleWord(strId);
+            if (item != null) {
+                UpdateDialog(strId, item.word, item.meaning, item.sample);
+            }
+
+        }
+
+    }
+    //修改对话框
+    private void UpdateDialog(final String strId, final String strWord, final String strMeaning, final String strSample) {
+       // final View tableLayout = getLayoutInflater().inflate(R.layout.activity_instert, null);
+        final View tableLayout = LayoutInflater.from(getContext()).inflate(R.layout.activity_instert, null, false);
+        ((EditText) tableLayout.findViewById(R.id.insert_name_edit)).setText(strWord);
+        ((EditText) tableLayout.findViewById(R.id.insert_meaning_edit)).setText(strMeaning);
+        ((EditText) tableLayout.findViewById(R.id.insert_sample_edit)).setText(strSample);
+        new AlertDialog.Builder(getContext())
+                .setTitle("修改单词")//标题
+                .setView(tableLayout)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String strNewWord = ((EditText) tableLayout.findViewById(R.id.insert_name_edit)).getText().toString();
+                        String strNewMeaning = ((EditText) tableLayout.findViewById(R.id.insert_meaning_edit)).getText().toString();
+                        String strNewSample = ((EditText) tableLayout.findViewById(R.id.insert_sample_edit)).getText().toString();
+
+                        //既可以使用Sql语句更新，也可以使用使用update方法更新
+                        WordsDB wordsDB=WordsDB.getWordsDB();
+                        wordsDB.UpdateUseSql(strId, strWord, strNewMeaning, strNewSample);
+
+                        //单词已经更新，更新显示列表
+                        refreshWordsList(wordsDB);
+                    }
+                })
+                //取消按钮及其动作
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                })
+                .create()//创建对话框
+                .show();//显示对话框
+
+
+    }
+    public void refreshWordsList(WordsDB wordsDB){  //刷新界面
+        ListView list = (ListView)getActivity().findViewById(R.id.list);
+        ArrayList<Map<String, String>> items = wordsDB.getAllWords();
+        SimpleAdapter adapter = new SimpleAdapter(getContext(), items, R.layout.item,
+                new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
+                new int[]{R.id.textId, R.id.textViewWord});
+        list.setAdapter(adapter);
+    }
+
+
 
 }

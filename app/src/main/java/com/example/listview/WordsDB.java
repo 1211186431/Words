@@ -143,6 +143,9 @@ public class WordsDB {
 
     //更新单词
     public void UpdateUseSql(String strId, String strWord, String strMeaning, String strSample) {
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String sql = "update words set word=?,meaning=?,sample=? where _id=?";
+        db.execSQL(sql, new String[]{strWord,strMeaning, strSample, strId});
     }
 
     public void Update(String strId, String strWord, String strMeaning, String strSample) {
