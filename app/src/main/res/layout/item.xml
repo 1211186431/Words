@@ -8,7 +8,7 @@
         android:id="@+id/textId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="25dp" />
+        android:textSize="0sp" />
 
     <TextView
         android:id="@+id/textViewWord"

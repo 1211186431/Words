@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -46,6 +49,7 @@ public class LeftFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private SearchView searchView;
+    private OnFragmentInteractionListener mListener;
     private ListView listView;
 
     // TODO: Rename and change types of parameters
@@ -297,21 +301,56 @@ public class LeftFragment extends Fragment {
                 TextView txtId=view.findViewById(R.id.textId);
                 String id=txtId.getText().toString();
                 //Toast.makeText(context,pro,Toast.LENGTH_LONG).show();
-
-                final RightFragment f1=new RightFragment();
-                fragmentManager = getActivity().getSupportFragmentManager();
+                if(island()){    //直接横竖屏有问题 都没结果 可能是id问题
+                    final RightFragment f1=new RightFragment();
+                    fragmentManager = getActivity().getSupportFragmentManager();
 //        通过begin开启事务
-                fragmentTransaction = fragmentManager.beginTransaction();
-                Bundle args = new Bundle();
-                args.putString("id", id);
-                f1.setArguments(args);
-                fragmentTransaction.replace(R.id.right,f1);
+                    fragmentTransaction = fragmentManager.beginTransaction();
+                    Bundle args = new Bundle();
+                    args.putString("id", id);
+                    f1.setArguments(args);
+                    fragmentTransaction.replace(R.id.right,f1);
 //        将事务添加到返回栈中   是当用户按下Back后就直接退出活动了，而如上设置为null则返回到上一个碎片。
-                fragmentTransaction.addToBackStack(null);
+     //               fragmentTransaction.addToBackStack(null);
 
-                fragmentTransaction.commit();
+                    fragmentTransaction.commit();
+                }
+                else{
+                    mListener.onWordItemClick(id);
+
+                }
+
             }
         });
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        //获取实现接口的activity
+        //mListener = (mListener) getActivity();//或者myListener=(MainActivity) context;
+        mListener=(MainActivity) context;
+    }
+
+
+    public boolean island(){
+        boolean island=true;
+        Configuration mConfiguration = this.getResources().getConfiguration(); //获取设置的配置信息
+        int ori = mConfiguration.orientation; //获取屏幕方向
+        if (ori == mConfiguration.ORIENTATION_LANDSCAPE) {
+              island=true;
+        } else if (ori == mConfiguration.ORIENTATION_PORTRAIT) {
+            //竖屏
+            island=false;
+        }
+
+        return island;
+    }
+    /**
+     * Fragment所在的Activity必须实现该接口，通过该接口Fragment和Activity可以进行通信
+     */
+    public interface OnFragmentInteractionListener {
+        public void onWordItemClick(String id);
     }
 
 }

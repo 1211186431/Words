@@ -22,11 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity implements LeftFragment.OnFragmentInteractionListener{
 
-    private final static String PRODUCT = "product";
-    private final static String PRICE = "price";
-    private final static String CONFIGURATION = "configuration";
     WordsDBHelper mDbHelper;
 
     @Override
@@ -109,7 +106,10 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-
-
-
+    @Override
+    public void onWordItemClick(String id) {
+        Intent intent = new Intent(MainActivity.this,detail.class);
+        intent.putExtra("id", id);
+        startActivity(intent);
+    }
 }

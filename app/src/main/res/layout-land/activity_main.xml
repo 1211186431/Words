@@ -5,13 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="5"
-    android:id="@+id/shang"
-    android:orientation="horizontal">
+    tools:ignore="MissingDefaultResource">
+
    <fragment
        android:layout_width="0dp"
        android:layout_weight="1"
@@ -24,7 +19,7 @@
        android:layout_height="match_parent"
        android:layout_weight="1"
        android:id="@+id/right"/>
-</LinearLayout>
+
 
 
 
