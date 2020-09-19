@@ -25,19 +25,7 @@
        android:layout_weight="1"
        android:id="@+id/right"/>
 </LinearLayout>
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="0dp"
-      android:layout_weight="1"
-       android:id="@+id/xia"
-       android:orientation="horizontal">
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-       android:id="@+id/insert"
-        android:text="insert"
-        android:onClick="onclickinsert"></Button>
-   </LinearLayout>
+
 
 
 </LinearLayout>

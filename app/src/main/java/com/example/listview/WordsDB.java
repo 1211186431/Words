@@ -129,17 +129,6 @@ public class WordsDB {
         db.execSQL(sql, new String[]{strId});
     }
 
-    public void Delete(String strId) {
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        // 定义where子句
-        String selection = Words.Word._ID + " = ?";
-
-        // 指定占位符对应的实际参数
-        String[] selectionArgs = {strId};
-
-        // Issue SQL statement.
-        db.delete(Words.Word.TABLE_NAME, selection, selectionArgs);
-    }
 
     //更新单词
     public void UpdateUseSql(String strId, String strWord, String strMeaning, String strSample) {
@@ -148,16 +137,14 @@ public class WordsDB {
         db.execSQL(sql, new String[]{strWord,strMeaning, strSample, strId});
     }
 
-    public void Update(String strId, String strWord, String strMeaning, String strSample) {
-    }
 
     //查找
     public ArrayList<Map<String, String>> SearchUseSql(String strWordSearch) {
-        return new ArrayList<>();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String sql = "select * from words where word like ? order by word desc";
+        Cursor c = db.rawQuery(sql, new String[]{"%" + strWordSearch + "%"});
+        return ConvertCursor2WordList(c);
     }
 
-    public ArrayList<Map<String, String>> Search(String strWordSearch) {
-        return new ArrayList<>();
-    }
 
 }

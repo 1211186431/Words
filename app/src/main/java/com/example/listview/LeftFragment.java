@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.SimpleAdapter;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -43,7 +45,8 @@ public class LeftFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private SearchView searchView;
+    private ListView listView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -102,28 +105,8 @@ public class LeftFragment extends Fragment {
                     new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
                     new int[]{R.id.textId, R.id.textViewWord});
             list.setAdapter(adapter);
+            find(contentView,context);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView txtId=view.findViewById(R.id.textId);
-                String id=txtId.getText().toString();
-                //Toast.makeText(context,pro,Toast.LENGTH_LONG).show();
-
-                final RightFragment f1=new RightFragment();
-                fragmentManager = getActivity().getSupportFragmentManager();
-//        通过begin开启事务
-                fragmentTransaction = fragmentManager.beginTransaction();
-                Bundle args = new Bundle();
-                args.putString("id", id);
-                f1.setArguments(args);
-                fragmentTransaction.replace(R.id.right,f1);
-//        将事务添加到返回栈中   是当用户按下Back后就直接退出活动了，而如上设置为null则返回到上一个碎片。
-                fragmentTransaction.addToBackStack(null);
-
-                fragmentTransaction.commit();
-            }
-        });
         return contentView;
     }
     @Override
@@ -223,6 +206,7 @@ public class LeftFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String strNewWord = ((EditText) tableLayout.findViewById(R.id.insert_name_edit)).getText().toString();
+                        String strWord = ((EditText) tableLayout.findViewById(R.id.insert_name_edit)).getText().toString();
                         String strNewMeaning = ((EditText) tableLayout.findViewById(R.id.insert_meaning_edit)).getText().toString();
                         String strNewSample = ((EditText) tableLayout.findViewById(R.id.insert_sample_edit)).getText().toString();
 
@@ -254,7 +238,80 @@ public class LeftFragment extends Fragment {
                 new int[]{R.id.textId, R.id.textViewWord});
         list.setAdapter(adapter);
     }
+    public void find(View contentView, final Context context){
+
+        final WordsDB wordsDB=new WordsDB(getContext());
+        listView = (ListView) contentView.findViewById(R.id.list);
+        ArrayList<Map<String, String>> items = wordsDB.getAllWords();
+        SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.item,
+                new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
+                new int[]{R.id.textId, R.id.textViewWord});
+
+        listView.setAdapter(adapter);
+        //为ListView启动过滤
+        listView.setTextFilterEnabled(true);
+        searchView = (SearchView) contentView.findViewById(R.id.sv);
+        //设置SearchView自动缩小为图标
+        searchView.setIconifiedByDefault(false);//设为true则搜索栏 缩小成俄日一个图标点击展开
+        //设置该SearchView显示搜索按钮
+        searchView.setSubmitButtonEnabled(true);
+        //设置默认提示文字
+        searchView.setQueryHint("输入您想查找的内容");
+        //配置监听器
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            //点击搜索按钮时触发
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                //此处添加查询开始后的具体时间和方法
+               // Toast.makeText(context,"you choose:" + query,Toast.LENGTH_LONG).show();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                //如果newText长度不为0
+                if (TextUtils.isEmpty(newText)){
+                    refreshWordsList(wordsDB);
+                }else{
+                    WordsDB wordsDB2=new WordsDB(getContext());         //自己写的过滤
+                    ArrayList<Map<String, String>> items = wordsDB2.SearchUseSql(newText);
+                    SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.item,
+                            new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
+                            new int[]{R.id.textId, R.id.textViewWord});
+                    listView.setAdapter(adapter);
+
+                 //   listView.setFilterText(newText);
+                 //   listView.dispatchDisplayHint(View.INVISIBLE);  //隐藏黑框
+                    //  adapter.getFilter().filter(newText.toString());//替换成本句后消失黑框！！！
+                }
+                return true;
+
+            }
+        });
 
 
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView txtId=view.findViewById(R.id.textId);
+                String id=txtId.getText().toString();
+                //Toast.makeText(context,pro,Toast.LENGTH_LONG).show();
+
+                final RightFragment f1=new RightFragment();
+                fragmentManager = getActivity().getSupportFragmentManager();
+//        通过begin开启事务
+                fragmentTransaction = fragmentManager.beginTransaction();
+                Bundle args = new Bundle();
+                args.putString("id", id);
+                f1.setArguments(args);
+                fragmentTransaction.replace(R.id.right,f1);
+//        将事务添加到返回栈中   是当用户按下Back后就直接退出活动了，而如上设置为null则返回到上一个碎片。
+                fragmentTransaction.addToBackStack(null);
+
+                fragmentTransaction.commit();
+            }
+        });
+    }
 
 }

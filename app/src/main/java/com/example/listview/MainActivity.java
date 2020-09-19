@@ -4,6 +4,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity{
     }
 
 
-    public void onclickinsert(View view) {
+    public void onclickinsert() {  //增加
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
         final View viewDialog = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_instert, null, false);
         builder.setTitle("insert")
@@ -71,6 +72,14 @@ public class MainActivity extends AppCompatActivity{
                 });
         builder.create().show();
     }
+
+
+    public void onclickfind() {
+      //  Intent intent=new Intent(MainActivity.this,Search.class);
+    // v     startActivity(intent);
+    }
+
+
     public void refreshWordsList(WordsDB wordsDB){
         ListView list = (ListView)findViewById(R.id.list);
         ArrayList<Map<String, String>> items = wordsDB.getAllWords();
@@ -88,10 +97,10 @@ public class MainActivity extends AppCompatActivity{
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_find:
-                Toast.makeText(this,"查找", Toast.LENGTH_SHORT).show();
+                onclickfind();
                 break;
             case R.id.action_insert:
-                Toast.makeText(this,"增加", Toast.LENGTH_SHORT).show();
+                onclickinsert();
                 break;
             default:
                 break;
