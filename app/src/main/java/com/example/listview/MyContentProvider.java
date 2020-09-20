@@ -65,6 +65,7 @@ public class MyContentProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         // TODO: Implement this to handle requests to insert a new row.
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        values.put("_id", GUID.getGUID());
         long id = db.insert(Words.Word.TABLE_NAME, null, values);
         if (id > 0) {
             //在已有的Uri后面添加id
