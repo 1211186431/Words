@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements LeftFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements LeftFragment.OnFragmentInteractionListener {
 
     WordsDBHelper mDbHelper;
 
@@ -53,12 +53,19 @@ public class MainActivity extends AppCompatActivity implements LeftFragment.OnFr
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                         WordsDB wordsDB=new WordsDB(MainActivity.this);
-                         EditText e1=viewDialog.findViewById(R.id.insert_name_edit);
-                         EditText e2=viewDialog.findViewById(R.id.insert_meaning_edit);
-                        EditText e3=viewDialog.findViewById(R.id.insert_sample_edit);
-                         wordsDB.Insert(e1.getText().toString(),e2.getText().toString(),e3.getText().toString());
-                         refreshWordsList(wordsDB);
+                        WordsDB wordsDB = new WordsDB(MainActivity.this);
+                        EditText e1 = viewDialog.findViewById(R.id.insert_name_edit);
+                        EditText e2 = viewDialog.findViewById(R.id.insert_meaning_edit);
+                        EditText e3 = viewDialog.findViewById(R.id.insert_sample_edit);
+                        if (e1.getText().toString().equals("") || e2.getText().toString().equals("") || e3.getText().toString().equals("")) {
+                            Toast.makeText(MainActivity.this, "添加失败", Toast.LENGTH_LONG).show();
+                        } else {
+                            wordsDB.Insert(e1.getText().toString(), e2.getText().toString(), e3.getText().toString());
+                            refreshWordsList(wordsDB);
+                            Toast.makeText(MainActivity.this, "添加成功", Toast.LENGTH_LONG).show();
+                        }
+
+
                     }
                 })
                 .setNegativeButton("返回", new DialogInterface.OnClickListener() {
@@ -71,30 +78,49 @@ public class MainActivity extends AppCompatActivity implements LeftFragment.OnFr
     }
 
 
-    public void onclickfind() {
-      //  Intent intent=new Intent(MainActivity.this,Search.class);
-    // v     startActivity(intent);
+    public void onclickhelp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        final View viewDialog = LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_help, null, false);
+        builder.setTitle("help")
+                .setView(viewDialog)
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+
+                    }
+                })
+                .setNegativeButton("返回", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.create().show();
+
     }
 
 
-    public void refreshWordsList(WordsDB wordsDB){
-        ListView list = (ListView)findViewById(R.id.list);
+    public void refreshWordsList(WordsDB wordsDB) {
+        ListView list = (ListView) findViewById(R.id.list);
         ArrayList<Map<String, String>> items = wordsDB.getAllWords();
         SimpleAdapter adapter = new SimpleAdapter(MainActivity.this, items, R.layout.item,
                 new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
                 new int[]{R.id.textId, R.id.textViewWord});
         list.setAdapter(adapter);
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu,menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case R.id.action_find:
-                onclickfind();
+        switch (item.getItemId()) {
+            case R.id.action_help:
+                onclickhelp();
                 break;
             case R.id.action_insert:
                 onclickinsert();
@@ -108,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements LeftFragment.OnFr
 
     @Override
     public void onWordItemClick(String id) {
-        Intent intent = new Intent(MainActivity.this,detail.class);
+        Intent intent = new Intent(MainActivity.this, detail.class);
         intent.putExtra("id", id);
         startActivity(intent);
     }

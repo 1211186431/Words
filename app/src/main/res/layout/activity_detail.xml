@@ -10,15 +10,39 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/dan_ci"
+        android:text="单词："
+        android:textSize="40sp"
+        android:textColor="#ff00c0"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/hello_blank_fragment"
-        android:id="@+id/right_name2"/>
+        android:id="@+id/right_name2"
+        android:textSize="30sp"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/right_meaning2"/>
+        android:id="@+id/han_yi"
+        android:text="含义："
+        android:textSize="40sp"
+        android:textColor="#00ffff"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/right_sample2"/>
+        android:id="@+id/right_meaning2"
+        android:textSize="30sp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/li_ju"
+        android:text="例句："
+        android:textSize="40sp"
+        android:textColor="#0000c0"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/right_sample2"
+        android:textSize="30sp"/>
 
 </LinearLayout>

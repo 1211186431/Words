@@ -9,14 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <provider
             android:name=".MyContentProvider"
             android:authorities="com.example.listview.provider"
             android:enabled="true"
-            android:exported="true"/>
+            android:exported="true" />
 
         <activity android:name=".detail" />
-        <activity android:name=".FindActivity" />
         <activity android:name=".instert" />
         <activity android:name=".MainActivity">
             <intent-filter>

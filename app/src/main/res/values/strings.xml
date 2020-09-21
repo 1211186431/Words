@@ -2,4 +2,6 @@
     <string name="app_name">ListView</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="help">帮助</string>
+    <string name="action_insert">增加</string>
 </resources>

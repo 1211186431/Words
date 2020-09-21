@@ -12,12 +12,16 @@
       android:id="@+id/insert_shang"
       android:orientation="horizontal">
       <TextView
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
+          android:layout_weight="1"
           android:layout_height="wrap_content"
           android:id="@+id/insert_name"
-          android:text="单词"/>
+          android:text="单词:"
+          android:textSize="20sp"
+          />
       <EditText
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
+          android:layout_weight="4"
           android:layout_height="wrap_content"
           android:id="@+id/insert_name_edit"/>
   </LinearLayout>
@@ -27,12 +31,15 @@
         android:id="@+id/insert_zhong"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/insert_meaning"
-            android:text="含义"/>
+            android:text="含义:"
+            android:textSize="20sp"/>
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
             android:id="@+id/insert_meaning_edit"/>
     </LinearLayout>
@@ -42,12 +49,15 @@
         android:id="@+id/insert_xia"
         android:orientation="horizontal">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
             android:id="@+id/insert_sample"
-            android:text="例句"/>
+            android:text="例句:"
+            android:textSize="20sp"/>
         <EditText
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
             android:id="@+id/insert_sample_edit"/>
     </LinearLayout>

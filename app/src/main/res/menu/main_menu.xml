@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/action_find"
-        android:title="查找" />
+        android:id="@+id/action_help"
+        android:title="@string/help" />
 
     <item
         android:id="@+id/action_insert"
-        android:title="增加" />
+        android:title="@string/action_insert" />
 </menu>

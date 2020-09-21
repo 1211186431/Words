@@ -209,17 +209,21 @@ public class LeftFragment extends Fragment {
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String strNewWord = ((EditText) tableLayout.findViewById(R.id.insert_name_edit)).getText().toString();
                         String strWord = ((EditText) tableLayout.findViewById(R.id.insert_name_edit)).getText().toString();
                         String strNewMeaning = ((EditText) tableLayout.findViewById(R.id.insert_meaning_edit)).getText().toString();
                         String strNewSample = ((EditText) tableLayout.findViewById(R.id.insert_sample_edit)).getText().toString();
+                        if(strWord.equals("")||strNewMeaning.equals("")||strNewSample.equals("")){
+                            Toast.makeText(getContext(),"修改失败",Toast.LENGTH_LONG).show();
+                        }
+                        else{
+                            //既可以使用Sql语句更新，也可以使用使用update方法更新
+                            WordsDB wordsDB=WordsDB.getWordsDB();
+                            wordsDB.UpdateUseSql(strId, strWord, strNewMeaning, strNewSample);
+                            //单词已经更新，更新显示列表
+                            refreshWordsList(wordsDB);
+                            Toast.makeText(getContext(),"修改成功",Toast.LENGTH_LONG).show();
+                        }
 
-                        //既可以使用Sql语句更新，也可以使用使用update方法更新
-                        WordsDB wordsDB=WordsDB.getWordsDB();
-                        wordsDB.UpdateUseSql(strId, strWord, strNewMeaning, strNewSample);
-
-                        //单词已经更新，更新显示列表
-                        refreshWordsList(wordsDB);
                     }
                 })
                 //取消按钮及其动作
@@ -299,7 +303,7 @@ public class LeftFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView txtId=view.findViewById(R.id.textId);
-                String id=txtId.getText().toString();
+                String id=txtId.getText().toString();             //右边fragment切换
                 //Toast.makeText(context,pro,Toast.LENGTH_LONG).show();
                 if(island()){    //直接横竖屏有问题 都没结果 可能是id问题
                     final RightFragment f1=new RightFragment();
