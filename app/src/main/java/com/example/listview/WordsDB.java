@@ -14,17 +14,7 @@ import java.util.Map;
 public class WordsDB {
     private static final String TAG = "myTag";
     private static WordsDBHelper mDbHelper;   //采用单例模式
-    private static WordsDB instance = new WordsDB();
 
-    public static WordsDB getWordsDB() {
-        return WordsDB.instance;
-    }
-
-    private WordsDB() {
-        if (mDbHelper == null) {
-            mDbHelper = new WordsDBHelper(WordsApplication.getContext());
-        }
-    }
     public WordsDB(Context context){
             mDbHelper = new WordsDBHelper(context);
     }
@@ -94,14 +84,6 @@ public class WordsDB {
             result.add(map);
         }
         return result;
-    }
-
-    //增加单词
-    public  void InsertUserSql(String strWord, String strMeaning, String strSample) {
-        String sql = "insert into  words(_id,word,meaning,sample) values(?,?,?,?)";
-        //Gets the data repository in write mode*/
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.execSQL(sql, new String[]{GUID.getGUID(),strWord, strMeaning, strSample});
     }
 
     public void Insert(String strWord, String strMeaning, String strSample) {

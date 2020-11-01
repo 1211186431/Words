@@ -96,13 +96,8 @@ public class LeftFragment extends Fragment {
         // Inflate the layout for this fragment
         View contentView = inflater.inflate(R.layout.fragment_left, container, false);
         final Context context = contentView.getContext();
-
         ListView list = (ListView) contentView.findViewById(R.id.list);
-
-
         this.registerForContextMenu(list);
-
-
         WordsDB wordsDB=new WordsDB(context);
             ArrayList<Map<String, String>> items = wordsDB.getAllWords();
             SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.item,
@@ -110,7 +105,6 @@ public class LeftFragment extends Fragment {
                     new int[]{R.id.textId, R.id.textViewWord});
             list.setAdapter(adapter);
             find(contentView,context);
-
         return contentView;
     }
     @Override
@@ -169,9 +163,8 @@ public class LeftFragment extends Fragment {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 //既可以使用Sql语句删除，也可以使用使用delete方法删除
-                WordsDB wordsDB=WordsDB.getWordsDB();
+                WordsDB wordsDB=new WordsDB(getContext());
                 wordsDB.DeleteUseSql(strId);
-
                 //单词已经删除，更新显示列表
                 refreshWordsList(wordsDB);
             }
@@ -185,7 +178,7 @@ public class LeftFragment extends Fragment {
 
 
     public void onUpdateDialog(String strId) {
-        WordsDB wordsDB=WordsDB.getWordsDB();
+        WordsDB wordsDB=new WordsDB(getContext());
         if (wordsDB != null && strId != null) {
 
             Words.WordDescription item = wordsDB.getSingleWord(strId);
@@ -217,7 +210,7 @@ public class LeftFragment extends Fragment {
                         }
                         else{
                             //既可以使用Sql语句更新，也可以使用使用update方法更新
-                            WordsDB wordsDB=WordsDB.getWordsDB();
+                            WordsDB wordsDB=new WordsDB(getContext());
                             wordsDB.UpdateUseSql(strId, strWord, strNewMeaning, strNewSample);
                             //单词已经更新，更新显示列表
                             refreshWordsList(wordsDB);
@@ -258,20 +251,21 @@ public class LeftFragment extends Fragment {
         listView.setAdapter(adapter);
         //为ListView启动过滤
         listView.setTextFilterEnabled(true);
-        searchView = (SearchView) contentView.findViewById(R.id.sv);
-        //设置SearchView自动缩小为图标
+        searchView = (SearchView) contentView.findViewById(R.id.sv);//设置SearchView自动缩小为图标
         searchView.setIconifiedByDefault(false);//设为true则搜索栏 缩小成俄日一个图标点击展开
-        //设置该SearchView显示搜索按钮
-        searchView.setSubmitButtonEnabled(true);
-        //设置默认提示文字
-        searchView.setQueryHint("输入您想查找的内容");
+        searchView.setSubmitButtonEnabled(true);//设置该SearchView显示搜索按钮
+        searchView.setQueryHint("输入您想查找的内容");//设置默认提示文字
         //配置监听器
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             //点击搜索按钮时触发
             @Override
             public boolean onQueryTextSubmit(String query) {
-                //此处添加查询开始后的具体时间和方法
-               // Toast.makeText(context,"you choose:" + query,Toast.LENGTH_LONG).show();
+                WordsDB wordsDB2=new WordsDB(getContext());         //自己写的过滤
+                ArrayList<Map<String, String>> items = wordsDB2.SearchUseSql(query);
+                SimpleAdapter adapter = new SimpleAdapter(getActivity(), items, R.layout.item,
+                        new String[]{Words.Word._ID, Words.Word.COLUMN_NAME_WORD},
+                        new int[]{R.id.textId, R.id.textViewWord});
+                listView.setAdapter(adapter);
                 return false;
             }
             @Override
@@ -299,7 +293,7 @@ public class LeftFragment extends Fragment {
 
 
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener( new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView txtId=view.findViewById(R.id.textId);
